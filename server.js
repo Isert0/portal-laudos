@@ -5,14 +5,12 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ─── Configurações da planilha ───────────────────────────────────
 const PLANILHA_ID = process.env.PLANILHA_ID || "1nkWQ23_SQKHa6skmkfjPjZQ-mZ328_79JG_9zXPZRRo";
 const NOME_ABA = process.env.NOME_ABA || "Janeiro";
 const SHEETS_API_KEY = process.env.SHEETS_API_KEY || "AIzaSyAKifz9Hc9Q6xBmvoV-RUYMgf588VXUxbk";
 
 const URL_PLANILHA = `https://sheets.googleapis.com/v4/spreadsheets/${PLANILHA_ID}/values/${encodeURIComponent(NOME_ABA)}?key=${SHEETS_API_KEY}`;
 
-// ─── Cache (2 minutos) ─────────────────────────────────────────
 let cache = { dados: null, timestamp: 0 };
 const CACHE_TTL = 2 * 60 * 1000;
 
@@ -24,13 +22,11 @@ async function getDados() {
     const res = await fetch(URL_PLANILHA, { signal: AbortSignal.timeout(10000) });
     if (!res.ok) throw new Error(`Planilha respondeu ${res.status}`);
     const data = await res.json();
-    
-    // A API retorna um objeto com "values": primeira linha são os cabeçalhos
+
     if (!data.values || data.values.length < 2) throw new Error("Planilha sem dados");
-    
+
     const headers = data.values[0];
     const rows = data.values.slice(1);
-    
     const dadosFormatados = rows.map(row => {
       const obj = {};
       headers.forEach((header, idx) => {
@@ -38,7 +34,7 @@ async function getDados() {
       });
       return obj;
     });
-    
+
     cache = { dados: dadosFormatados, timestamp: agora };
     return dadosFormatados;
   } catch (error) {
@@ -49,7 +45,7 @@ async function getDados() {
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public")); // Serve os arquivos do front-end
+app.use(express.static("public"));
 
 app.use((req, _res, next) => {
   console.log(`[${new Date().toLocaleTimeString("pt-BR")}] ${req.method} ${req.path}`);
@@ -79,7 +75,6 @@ app.get("/laudo/:codigo", async (req, res) => {
   }
 
   const base = linhas[0];
-
   const laudo = {
     codigo,
     empresa: base["Empresa"] || null,
