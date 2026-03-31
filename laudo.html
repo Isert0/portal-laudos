@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Laudo de Análise</title>
+  <style>
+    /* ── Reset de impressão ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @page {
+      size: A4;
+      margin: 18mm 20mm 18mm 20mm;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      font-size: 10pt;
+      color: #1a1a1a;
+      background: #fff;
+      line-height: 1.5;
+    }
+
+    /* ── Cabeçalho ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0a3d2e;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .lab-info { flex: 1; }
+    .lab-nome {
+      font-family: 'Arial', sans-serif;
+      font-size: 15pt;
+      font-weight: 700;
+      color: #0a3d2e;
+      letter-spacing: 0.02em;
+    }
+    .lab-sub {
+      font-size: 8pt;
+      color: #4a4a4a;
+      margin-top: 2px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .lab-contato {
+      font-size: 8pt;
+      color: #555;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+    .doc-info {
+      text-align: right;
+      font-family: 'Arial', sans-serif;
+    }
+    .doc-titulo {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #0a3d2e;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .doc-num {
+      font-size: 9pt;
+      color: #555;
+      margin-top: 4px;
+    }
+    .doc-codigo {
+      display: inline-block;
+      margin-top: 6px;
+      background: #0a3d2e;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 11pt;
+      font-weight: 700;
+      padding: 3px 12px;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Seção de identificação ── */
+    .secao-titulo {
+      font-family: 'Arial', sans-serif;
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0a3d2e;
+      border-bottom: 0.5px solid #b3d4cb;
+      padding-bottom: 3px;
+      margin: 14px 0 8px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 20px;
+    }
+    .info-item { display: flex; gap: 6px; align-items: baseline; }
+    .info-label {
+      font-family: 'Arial', sans-serif;
+      font-size: 8pt;
+      color: #666;
+      white-space: nowrap;
+      min-width: 90px;
+    }
+    .info-valor {
+      font-size: 9.5pt;
+      color: #1a1a1a;
+      font-weight: 500;
+      border-bottom: 0.5px dotted #ccc;
+      flex: 1;
+    }
+
+    /* ── Tabela de resultados ── */
+    .tabela-wrap { margin-top: 8px; overflow: hidden; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+    }
+    thead tr {
+      background: #0a3d2e;
+      color: #fff;
+    }
+    thead th {
+      font-family: 'Arial', sans-serif;
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 7px 10px;
+      text-align: left;
+    }
+    thead th:last-child { text-align: center; }
+
+    tbody tr:nth-child(even) { background: #f2f8f5; }
+    tbody tr:nth-child(odd)  { background: #fff; }
+    tbody td {
+      padding: 6px 10px;
+      border-bottom: 0.5px solid #dce8e3;
+      vertical-align: middle;
+    }
+    tbody td:last-child { text-align: center; }
+
+    .analise-nome { font-weight: 500; color: #1a1a1a; }
+    .analise-metodo { font-size: 7.5pt; color: #777; display: block; margin-top: 1px; }
+
+    .resultado-val {
+      font-family: 'Courier New', monospace;
+      font-size: 10pt;
+      font-weight: 700;
+      color: #0a3d2e;
+    }
+    .resultado-unidade { font-size: 8pt; color: #555; margin-left: 3px; }
+
+    .referencia { font-size: 8pt; color: #555; }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      font-family: 'Arial', sans-serif;
+      font-size: 7.5pt;
+      font-weight: 700;
+      padding: 2px 8px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .badge-ok      { background: #dcf5ec; color: #0a6640; border: 0.5px solid #a3d9be; }
+    .badge-wip     { background: #fff3dc; color: #8a5a00; border: 0.5px solid #f0c97a; }
+    .badge-pending { background: #f0f0f0; color: #666;    border: 0.5px solid #ccc; }
+
+    /* ── Linha de status geral ── */
+    .status-geral {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f2f8f5;
+      border: 1px solid #b3d4cb;
+      padding: 8px 14px;
+      margin-top: 14px;
+    }
+    .status-geral-label {
+      font-family: 'Arial', sans-serif;
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #555;
+      letter-spacing: 0.06em;
+    }
+    .status-geral-valor {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #0a3d2e;
+    }
+
+    /* ── Observações ── */
+    .obs-box {
+      border: 0.5px solid #ccc;
+      padding: 8px 12px;
+      min-height: 36px;
+      font-size: 8.5pt;
+      color: #444;
+      margin-top: 6px;
+    }
+
+    /* ── Rodapé de assinaturas ── */
+    .assinaturas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 30px;
+    }
+    .assinatura-bloco { text-align: center; }
+    .assinatura-linha {
+      border-top: 1px solid #333;
+      padding-top: 5px;
+      margin-top: 36px;
+    }
+    .assinatura-nome {
+      font-family: 'Arial', sans-serif;
+      font-size: 9pt;
+      font-weight: 700;
+    }
+    .assinatura-cargo {
+      font-size: 8pt;
+      color: #666;
+    }
+
+    /* ── Rodapé da página ── */
+    .rodape {
+      margin-top: 20px;
+      border-top: 0.5px solid #b3d4cb;
+      padding-top: 7px;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Arial', sans-serif;
+      font-size: 7.5pt;
+      color: #888;
+    }
+    .rodape-aviso {
+      font-size: 7pt;
+      color: #aaa;
+      margin-top: 3px;
+      text-align: center;
+    }
+
+    /* ── Selo "Documento Gerado Eletronicamente" ── */
+    .selo {
+      text-align: center;
+      margin-top: 10px;
+      font-family: 'Arial', sans-serif;
+      font-size: 7.5pt;
+      color: #999;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    @media print {
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body id="laudo-body">
+
+  <!-- Cabeçalho -->
+  <div class="header">
+    <div class="lab-info">
+      <div class="lab-nome">Laboratório de Análises</div>
+      <div class="lab-sub">Controle de Qualidade de Alimentos</div>
+      <div class="lab-contato">
+        contato@laboratorio.com.br · (xx) xxxx-xxxx<br>
+        Rua Exemplo, 000 · Cidade/UF · CNPJ: 00.000.000/0001-00
+      </div>
+    </div>
+    <div class="doc-info">
+      <div class="doc-titulo">Laudo de Análise</div>
+      <div class="doc-num">Emitido em: <span id="data-emissao">—</span></div>
+      <div class="doc-codigo" id="laudo-codigo">—</div>
+    </div>
+  </div>
+
+  <!-- Identificação da Amostra -->
+  <div class="secao-titulo">Identificação da Amostra</div>
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="info-label">Empresa:</span>
+      <span class="info-valor" id="info-empresa">—</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Data de Entrada:</span>
+      <span class="info-valor" id="info-data">—</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Tipo de Amostra:</span>
+      <span class="info-valor" id="info-tipo">—</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Responsável:</span>
+      <span class="info-valor" id="info-responsavel">—</span>
+    </div>
+  </div>
+
+  <!-- Resultados -->
+  <div class="secao-titulo">Resultados das Análises</div>
+  <div class="tabela-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:30%">Análise</th>
+          <th style="width:18%">Resultado</th>
+          <th style="width:22%">Valor de Referência</th>
+          <th style="width:18%">Método</th>
+          <th style="width:12%">Situação</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-analises">
+        <tr><td colspan="5" style="text-align:center;color:#aaa;padding:16px">Carregando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Status Geral -->
+  <div class="status-geral">
+    <span class="status-geral-label">Situação do Laudo:</span>
+    <span class="status-geral-valor" id="status-geral">—</span>
+  </div>
+
+  <!-- Observações -->
+  <div class="secao-titulo">Observações</div>
+  <div class="obs-box" id="obs-box">
+    Este laudo foi gerado eletronicamente a partir do sistema de gestão laboratorial.
+    Os resultados referem-se exclusivamente à(s) amostra(s) analisada(s).
+  </div>
+
+  <!-- Assinaturas -->
+  <div class="assinaturas">
+    <div class="assinatura-bloco">
+      <div class="assinatura-linha">
+        <div class="assinatura-nome">Responsável Técnico</div>
+        <div class="assinatura-cargo">CRQ / CRN / CREA</div>
+      </div>
+    </div>
+    <div class="assinatura-bloco">
+      <div class="assinatura-linha">
+        <div class="assinatura-nome">Diretor do Laboratório</div>
+        <div class="assinatura-cargo">Assinatura Autorizada</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <div class="rodape">
+    <span>Laboratório de Análises · CNPJ 00.000.000/0001-00</span>
+    <span id="rodape-codigo">Cód.: —</span>
+    <span id="rodape-data">—</span>
+  </div>
+  <div class="rodape-aviso">
+    Este documento tem validade apenas com assinatura do responsável técnico.
+    Resultados aplicam-se somente às amostras recebidas e analisadas.
+  </div>
+  <div class="selo">✦ Documento gerado eletronicamente ✦</div>
+
+  <script>
+    // ─── Recebe dados do portal via postMessage ───────────────
+    // O script.js do portal chama: laudoWindow.postMessage({ laudo: data }, '*')
+    window.addEventListener("message", (e) => {
+      if (e.data?.laudo) renderLaudo(e.data.laudo);
+    });
+
+    // Também aceita dados via URL (para debug)
+    // Ex: laudo.html?dados=BASE64_DO_JSON
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const raw = params.get("dados");
+      if (raw) {
+        try { renderLaudo(JSON.parse(atob(raw))); } catch(e) { console.warn("Dados inválidos na URL"); }
+      }
+
+      // Data de emissão
+      const agora = new Date();
+      const fmt = agora.toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric" });
+      const hora = agora.toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" });
+      document.getElementById("data-emissao").textContent = `${fmt} às ${hora}`;
+      document.getElementById("rodape-data").textContent  = `Emitido: ${fmt}`;
+    });
+
+    function statusBadge(s) {
+      if (!s) return '<span class="badge badge-pending">Pendente</span>';
+      const l = s.toLowerCase();
+      if (l.includes("conclu") || l.includes("ok") || l.includes("entregue"))
+        return `<span class="badge badge-ok">${s}</span>`;
+      if (l.includes("andamento") || l.includes("análise") || l.includes("processo"))
+        return `<span class="badge badge-wip">${s}</span>`;
+      return `<span class="badge badge-pending">${s}</span>`;
+    }
+
+    function renderLaudo(d) {
+      document.getElementById("laudo-codigo").textContent   = d.codigo   || "—";
+      document.getElementById("info-empresa").textContent   = d.empresa  || "—";
+      document.getElementById("info-tipo").textContent      = d.tipo     || "—";
+      document.getElementById("info-data").textContent      = d.data     || "—";
+      document.getElementById("info-responsavel").textContent = d.responsavel || "—";
+      document.getElementById("status-geral").textContent   = d.status   || "—";
+      document.getElementById("rodape-codigo").textContent  = `Cód.: ${d.codigo || "—"}`;
+      document.title = `Laudo ${d.codigo || ""}`;
+
+      const tbody = document.getElementById("tabela-analises");
+      if (!d.analises || d.analises.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#aaa;padding:16px">Nenhuma análise registrada.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = d.analises.map(a => `
+        <tr>
+          <td>
+            <span class="analise-nome">${a.nome || "—"}</span>
+            ${a.metodo ? `<span class="analise-metodo">${a.metodo}</span>` : ""}
+          </td>
+          <td>
+            ${a.resultado
+              ? `<span class="resultado-val">${a.resultado}</span><span class="resultado-unidade">${a.unidade || ""}</span>`
+              : `<span style="color:#aaa">—</span>`}
+          </td>
+          <td><span class="referencia">${a.referencia || "—"}</span></td>
+          <td style="font-size:8pt;color:#555">${a.metodo || "—"}</td>
+          <td>${statusBadge(a.status)}</td>
+        </tr>`).join("");
+    }
+  </script>
+</body>
+</html>
