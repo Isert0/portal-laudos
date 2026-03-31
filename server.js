@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 // Configuração da planilha
 const PLANILHA_ID = process.env.PLANILHA_ID || "1nkWQ23_SQKHa6skmkfjPjZQ-mZ328_79JG_9zXPZRRo";
 const NOME_ABA = process.env.NOME_ABA || "Janeiro";
-const SHEETS_API_KEY = process.env.SHEETS_API_KEY || "AIzaSyAKifz9Hc9Q6xBmvoV-RUYMgf588VXUxbk";
+const SHEETS_API_KEY = process.env.SHEETS_API_KEY;
 
 const URL_PLANILHA = `https://sheets.googleapis.com/v4/spreadsheets/${PLANILHA_ID}/values/${encodeURIComponent(NOME_ABA)}?key=${SHEETS_API_KEY}`;
 
