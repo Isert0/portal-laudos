@@ -1,4 +1,4 @@
-const API_BASE = "";
+const API_BASE = "https://portal-laudos-production.up.railway.app";
 
 // ─── Loading ──────────────────────────────────────────────────
 function setLoading(on) {
