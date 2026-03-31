@@ -4,14 +4,9 @@
   <meta charset="UTF-8">
   <title>Laudo de Análise</title>
   <style>
-    /* ── Reset de impressão ── */
+    /* Reset e impressão */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    @page {
-      size: A4;
-      margin: 18mm 20mm 18mm 20mm;
-    }
-
+    @page { size: A4; margin: 18mm 20mm 18mm 20mm; }
     body {
       font-family: 'Georgia', serif;
       font-size: 10pt;
@@ -19,8 +14,6 @@
       background: #fff;
       line-height: 1.5;
     }
-
-    /* ── Cabeçalho ── */
     .header {
       display: flex;
       justify-content: space-between;
@@ -77,8 +70,6 @@
       padding: 3px 12px;
       letter-spacing: 0.1em;
     }
-
-    /* ── Seção de identificação ── */
     .secao-titulo {
       font-family: 'Arial', sans-serif;
       font-size: 8pt;
@@ -90,7 +81,6 @@
       padding-bottom: 3px;
       margin: 14px 0 8px;
     }
-
     .info-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -111,10 +101,7 @@
       border-bottom: 0.5px dotted #ccc;
       flex: 1;
     }
-
-    /* ── Tabela de resultados ── */
     .tabela-wrap { margin-top: 8px; overflow: hidden; }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -134,7 +121,6 @@
       text-align: left;
     }
     thead th:last-child { text-align: center; }
-
     tbody tr:nth-child(even) { background: #f2f8f5; }
     tbody tr:nth-child(odd)  { background: #fff; }
     tbody td {
@@ -143,10 +129,8 @@
       vertical-align: middle;
     }
     tbody td:last-child { text-align: center; }
-
     .analise-nome { font-weight: 500; color: #1a1a1a; }
     .analise-metodo { font-size: 7.5pt; color: #777; display: block; margin-top: 1px; }
-
     .resultado-val {
       font-family: 'Courier New', monospace;
       font-size: 10pt;
@@ -154,10 +138,7 @@
       color: #0a3d2e;
     }
     .resultado-unidade { font-size: 8pt; color: #555; margin-left: 3px; }
-
     .referencia { font-size: 8pt; color: #555; }
-
-    /* Status badges */
     .badge {
       display: inline-block;
       font-family: 'Arial', sans-serif;
@@ -170,8 +151,6 @@
     .badge-ok      { background: #dcf5ec; color: #0a6640; border: 0.5px solid #a3d9be; }
     .badge-wip     { background: #fff3dc; color: #8a5a00; border: 0.5px solid #f0c97a; }
     .badge-pending { background: #f0f0f0; color: #666;    border: 0.5px solid #ccc; }
-
-    /* ── Linha de status geral ── */
     .status-geral {
       display: flex;
       align-items: center;
@@ -194,8 +173,6 @@
       font-weight: 700;
       color: #0a3d2e;
     }
-
-    /* ── Observações ── */
     .obs-box {
       border: 0.5px solid #ccc;
       padding: 8px 12px;
@@ -204,8 +181,6 @@
       color: #444;
       margin-top: 6px;
     }
-
-    /* ── Rodapé de assinaturas ── */
     .assinaturas {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -227,8 +202,6 @@
       font-size: 8pt;
       color: #666;
     }
-
-    /* ── Rodapé da página ── */
     .rodape {
       margin-top: 20px;
       border-top: 0.5px solid #b3d4cb;
@@ -245,8 +218,6 @@
       margin-top: 3px;
       text-align: center;
     }
-
-    /* ── Selo "Documento Gerado Eletronicamente" ── */
     .selo {
       text-align: center;
       margin-top: 10px;
@@ -256,7 +227,6 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-
     @media print {
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     }
@@ -363,14 +333,12 @@
   <div class="selo">✦ Documento gerado eletronicamente ✦</div>
 
   <script>
-    // ─── Recebe dados do portal via postMessage ───────────────
-    // O script.js do portal chama: laudoWindow.postMessage({ laudo: data }, '*')
+    // Recebe dados do portal via postMessage
     window.addEventListener("message", (e) => {
       if (e.data?.laudo) renderLaudo(e.data.laudo);
     });
 
-    // Também aceita dados via URL (para debug)
-    // Ex: laudo.html?dados=BASE64_DO_JSON
+    // Também aceita dados via URL (para abrir diretamente)
     window.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       const raw = params.get("dados");
@@ -378,7 +346,6 @@
         try { renderLaudo(JSON.parse(atob(raw))); } catch(e) { console.warn("Dados inválidos na URL"); }
       }
 
-      // Data de emissão
       const agora = new Date();
       const fmt = agora.toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric" });
       const hora = agora.toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" });
@@ -426,7 +393,8 @@
           <td><span class="referencia">${a.referencia || "—"}</span></td>
           <td style="font-size:8pt;color:#555">${a.metodo || "—"}</td>
           <td>${statusBadge(a.status)}</td>
-        </tr>`).join("");
+        </tr>
+      `).join("");
     }
   </script>
 </body>

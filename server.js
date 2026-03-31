@@ -5,15 +5,18 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configuração da planilha
 const PLANILHA_ID = process.env.PLANILHA_ID || "1nkWQ23_SQKHa6skmkfjPjZQ-mZ328_79JG_9zXPZRRo";
 const NOME_ABA = process.env.NOME_ABA || "Janeiro";
 const SHEETS_API_KEY = process.env.SHEETS_API_KEY || "AIzaSyAKifz9Hc9Q6xBmvoV-RUYMgf588VXUxbk";
 
 const URL_PLANILHA = `https://sheets.googleapis.com/v4/spreadsheets/${PLANILHA_ID}/values/${encodeURIComponent(NOME_ABA)}?key=${SHEETS_API_KEY}`;
 
+// Cache simples (2 minutos)
 let cache = { dados: null, timestamp: 0 };
 const CACHE_TTL = 2 * 60 * 1000;
 
+// Função para buscar e formatar dados da planilha
 async function getDados() {
   const agora = Date.now();
   if (cache.dados && agora - cache.timestamp < CACHE_TTL) return cache.dados;
@@ -43,19 +46,31 @@ async function getDados() {
   }
 }
 
+// Tratamento de exceções não capturadas (evita que o servidor caia)
+process.on("uncaughtException", (err) => {
+  console.error("❌ Exceção não capturada:", err);
+});
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("❌ Promise rejeitada não tratada:", reason);
+});
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static("public")); // Serve os arquivos estáticos do front-end
 
+// Log de requisições
 app.use((req, _res, next) => {
   console.log(`[${new Date().toLocaleTimeString("pt-BR")}] ${req.method} ${req.path}`);
   next();
 });
 
-app.get("/", (_req, res) => {
+// Rota de status (opcional)
+app.get("/api/status", (_req, res) => {
   res.json({ status: "ok", planilha: PLANILHA_ID, aba: NOME_ABA });
 });
 
+// Rota para buscar um laudo específico
 app.get("/laudo/:codigo", async (req, res) => {
   const codigo = req.params.codigo.trim().toUpperCase();
   if (!codigo) return res.status(400).json({ erro: "Código não informado" });
@@ -69,7 +84,6 @@ app.get("/laudo/:codigo", async (req, res) => {
   }
 
   const linhas = dados.filter(r => (r["Código"] || "").trim().toUpperCase() === codigo);
-
   if (linhas.length === 0) {
     return res.status(404).json({ erro: "Código não encontrado" });
   }
@@ -96,6 +110,7 @@ app.get("/laudo/:codigo", async (req, res) => {
   return res.json(laudo);
 });
 
+// Rota para listar todos os códigos disponíveis
 app.get("/laudos", async (_req, res) => {
   try {
     const dados = await getDados();
@@ -106,6 +121,7 @@ app.get("/laudos", async (_req, res) => {
   }
 });
 
+// Inicia o servidor
 app.listen(PORT, () => {
   console.log(`\n🔬 Portal de Laudos API`);
   console.log(`   http://localhost:${PORT}`);

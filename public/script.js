@@ -1,21 +1,21 @@
-const API_BASE = "window.location.origin";
+const API_BASE = ""; // relativo ao mesmo domínio
 
-// ─── Loading ──────────────────────────────────────────────────
+// Loading
 function setLoading(on) {
-  const btn     = document.getElementById("btnBuscar");
+  const btn = document.getElementById("btnBuscar");
   const spinner = document.getElementById("btnSpinner");
-  const text    = btn.querySelector(".btn-text");
+  const text = btn.querySelector(".btn-text");
   btn.disabled = on;
   spinner.classList.toggle("active", on);
   text.classList.toggle("hidden", on);
 }
 
-// ─── Helpers de status ────────────────────────────────────────
+// Status helpers
 function statusAnalise(s) {
   if (!s) return { cls: "pend", label: "Pendente" };
   const l = s.toLowerCase();
-  if (l.includes("conclu") || l.includes("ok") || l.includes("entregue")) return { cls: "ok",   label: s };
-  if (l.includes("andamento") || l.includes("processo") || l.includes("análise"))  return { cls: "wip",  label: s };
+  if (l.includes("conclu") || l.includes("ok") || l.includes("entregue")) return { cls: "ok", label: s };
+  if (l.includes("andamento") || l.includes("processo") || l.includes("análise")) return { cls: "wip", label: s };
   return { cls: "pend", label: s };
 }
 
@@ -25,12 +25,10 @@ function badgeClass(status) {
   return (l.includes("entregue") || l.includes("conclu")) ? "status-ok" : "status-wip";
 }
 
-// ─── Abrir laudo para impressão/PDF ───────────────────────────
+// Abrir laudo para impressão/PDF
 function abrirLaudo(data) {
-  // Codifica os dados em base64 e passa para laudo.html via URL
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
   const win = window.open(`laudo.html?dados=${encoded}`, "_blank");
-  // Fallback: postMessage caso a janela já esteja aberta
   if (win) {
     win.addEventListener("load", () => {
       win.postMessage({ laudo: data }, "*");
@@ -38,7 +36,7 @@ function abrirLaudo(data) {
   }
 }
 
-// ─── Renderizadores de estado ─────────────────────────────────
+// Renderizadores
 function renderErro(msg) {
   return `
     <div class="error-state">
@@ -123,11 +121,11 @@ function renderCard(data) {
     </div>`;
 }
 
-// ─── Busca principal ──────────────────────────────────────────
+// Busca principal
 async function buscar() {
-  const input        = document.getElementById("codigo");
+  const input = document.getElementById("codigo");
   const resultadoDiv = document.getElementById("resultado");
-  const codigo       = input.value.trim().toUpperCase();
+  const codigo = input.value.trim().toUpperCase();
 
   if (!codigo) {
     input.focus();
@@ -153,7 +151,7 @@ async function buscar() {
   }
 }
 
-// ─── Enter para buscar ────────────────────────────────────────
+// Enter para buscar
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("codigo").addEventListener("keydown", e => {
     if (e.key === "Enter") buscar();
