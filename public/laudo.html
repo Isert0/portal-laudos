@@ -4,34 +4,42 @@
   <meta charset="UTF-8">
   <title>Laudo Técnico</title>
   <style>
-    /* Reset e estilo para impressão */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Reset e configurações de impressão */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     @page {
       size: A4;
-      margin: 2.5cm 2cm 2cm 2cm;
+      margin: 2.5cm 2cm 2.5cm 2cm;
     }
+
     body {
-      font-family: 'Times New Roman', 'Georgia', serif;
+      font-family: 'Times New Roman', Georgia, serif;
       font-size: 11pt;
       line-height: 1.4;
-      color: #1a1a1a;
-      background: white;
+      color: #000;
+      background: #fff;
     }
-    /* Cabeçalho com logo */
+
+    /* Cabeçalho */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 2px solid #0f5b4c;
+      border-bottom: 2px solid #0a3d2e;
       padding-bottom: 8px;
       margin-bottom: 20px;
     }
     .logo {
-      width: 80px;
-      height: auto;
+      width: 70px;
+      height: 70px;
     }
     .logo img {
       max-width: 100%;
+      height: auto;
     }
     .instituicao {
       text-align: right;
@@ -41,19 +49,20 @@
       font-weight: bold;
       text-transform: uppercase;
       margin: 0;
-      color: #0f5b4c;
+      color: #0a3d2e;
     }
     .instituicao h2 {
       font-size: 12pt;
       font-weight: normal;
       margin: 4px 0 0;
-      color: #2c3e2b;
+      color: #2c5a3e;
     }
     .instituicao p {
       font-size: 9pt;
       color: #4a4a4a;
       margin-top: 4px;
     }
+
     /* Seções */
     .section {
       margin: 18px 0;
@@ -62,11 +71,13 @@
       font-size: 12pt;
       font-weight: bold;
       text-transform: uppercase;
-      color: #0f5b4c;
+      color: #0a3d2e;
       border-bottom: 1px solid #ccc;
       padding-bottom: 3px;
       margin-bottom: 12px;
     }
+
+    /* Grade de informações */
     .info-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -75,14 +86,14 @@
     }
     .info-item {
       display: flex;
-      flex-wrap: wrap;
       align-items: baseline;
+      flex-wrap: wrap;
     }
     .info-label {
       font-weight: bold;
       width: 150px;
       font-size: 10pt;
-      color: #2c3e2b;
+      color: #2c5a3e;
     }
     .info-value {
       flex: 1;
@@ -90,7 +101,8 @@
       border-bottom: 0.5px dotted #aaa;
       padding-left: 5px;
     }
-    /* Tabela de resultados */
+
+    /* Tabela de análises */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -106,7 +118,6 @@
       background-color: #e9f0e6;
       font-weight: bold;
       text-align: center;
-      font-size: 9pt;
     }
     td {
       text-align: left;
@@ -114,9 +125,18 @@
     .resultado-numerico {
       font-family: monospace;
       font-weight: bold;
-      color: #0f5b4c;
+      color: #0a3d2e;
     }
-    /* Rodapé assinatura */
+
+    /* Observações */
+    .obs {
+      font-size: 9pt;
+      color: #444;
+      margin: 8px 0;
+      line-height: 1.3;
+    }
+
+    /* Assinatura */
     .assinatura {
       margin-top: 40px;
       text-align: center;
@@ -128,33 +148,41 @@
     }
     .cargo {
       font-size: 10pt;
-      color: #444;
+      color: #555;
     }
     .local-data {
       margin-top: 25px;
       text-align: right;
       font-style: italic;
+      font-size: 10pt;
     }
-    /* Mensagem de rodapé */
+
+    /* Rodapé informativo */
     .footer-note {
       font-size: 8pt;
       text-align: center;
       margin-top: 20px;
       color: #777;
     }
+
     @media print {
-      body { margin: 0; }
-      .no-print { display: none; }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .no-print {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Cabeçalho institucional -->
+  <!-- Cabeçalho UFPA -->
   <div class="header">
     <div class="logo">
-      <!-- Substitua o src por uma imagem real se tiver, ou remova se não -->
-      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%230f5b4c'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white'%3EUFPA%3C/text%3E%3C/svg%3E" alt="Logo UFPA" style="width:70px; height:70px;">
+      <!-- Logo UFPA (substitua o src por uma imagem real se disponível) -->
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%230a3d2e'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white'%3EUFPA%3C/text%3E%3C/svg%3E" alt="UFPA">
     </div>
     <div class="instituicao">
       <h1>UNIVERSIDADE FEDERAL DO PARÁ</h1>
@@ -163,7 +191,7 @@
     </div>
   </div>
 
-  <!-- Dados gerais -->
+  <!-- Informações da Amostra -->
   <div class="section">
     <div class="section-title">Informações da Amostra</div>
     <div class="info-grid">
@@ -178,18 +206,12 @@
     </div>
   </div>
 
-  <!-- Resultados das análises -->
+  <!-- Tabela de Resultados -->
   <div class="section">
     <div class="section-title">Resultados das Análises</div>
     <table id="tabela-analises">
       <thead>
-        <tr>
-          <th>Análise</th>
-          <th>Resultado</th>
-          <th>Unidade</th>
-          <th>Método</th>
-          <th>Valor de Referência</th>
-        </tr>
+        <tr><th>Análise</th><th>Resultado</th><th>Unidade</th><th>Método</th><th>Valor de Referência</th></tr>
       </thead>
       <tbody>
         <tr><td colspan="5" style="text-align:center;">Carregando...</td></tr>
@@ -197,10 +219,10 @@
     </table>
   </div>
 
-  <!-- Observações -->
+  <!-- Observações (fixas do laboratório) -->
   <div class="section">
     <div class="section-title">Observações</div>
-    <div class="info-value" id="obs">
+    <div class="obs">
       * Os resultados foram expressos em termos de média ± desvio padrão de triplicata.<br>
       * Métodos oficiais AOCS (2004). Este laudo é válido apenas para a amostra analisada.
     </div>
@@ -211,52 +233,53 @@
     <p id="assinante">Dra. Luiza H. Meller da Silva</p>
     <p class="cargo">CRQ - 6ª. Região 06201323</p>
   </div>
-  <div class="local-data" id="localData">
+  <div class="local-data">
     Belém, <span id="dataEmissao">—</span>
   </div>
 
   <div class="footer-note">
-    Este documento foi gerado eletronicamente e tem validade com assinatura do responsável técnico.
+    Documento gerado eletronicamente – válido com assinatura do responsável técnico.
   </div>
 
   <script>
-    // Recebe dados do portal via postMessage ou URL
+    // Recebe dados via postMessage (do portal) ou via URL
     window.addEventListener("message", (e) => {
       if (e.data?.laudo) renderLaudo(e.data.laudo);
     });
+
     window.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       const raw = params.get("dados");
       if (raw) {
-        try { renderLaudo(JSON.parse(atob(raw))); } catch(e) { console.warn("Dados inválidos na URL"); }
+        try { renderLaudo(JSON.parse(atob(raw))); } catch(e) { console.warn("Erro ao decodificar dados"); }
       } else {
-        // Fallback: data atual
-        const hoje = new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric" });
+        const hoje = new Date().toLocaleDateString("pt-BR");
         document.getElementById("dataEmissao").textContent = hoje;
       }
     });
 
     function renderLaudo(data) {
-      // Preencher campos de identificação
-      document.getElementById("solicitante").textContent     = data.empresa || data.solicitante || "—";
-      document.getElementById("responsavel").textContent    = data.responsavelTecnico || data.responsavel || "—";
+      // Preencher campos da amostra
+      document.getElementById("solicitante").textContent = data.solicitante || data.empresa || "—";
+      document.getElementById("responsavel").textContent = data.responsavelTecnico || data.responsavel || "—";
       document.getElementById("dataRecebimento").textContent = data.dataRecebimento || data.data || "—";
-      document.getElementById("dataEntrega").textContent     = data.dataEntrega || "—";
-      document.getElementById("amostra").textContent         = data.amostra || data.tipo || "—";
-      document.getElementById("codigoProduto").textContent   = data.codigoProduto || data.codigo || "—";
-      document.getElementById("validade").textContent        = data.validade || "—";
-      document.getElementById("lote").textContent            = data.lote || "—";
-      document.getElementById("assinante").textContent       = data.assinante || "Dra. Luiza H. Meller da Silva";
-      // Data de emissão (hoje)
-      const hoje = new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", year:"numeric" });
+      document.getElementById("dataEntrega").textContent = data.dataEntrega || "—";
+      document.getElementById("amostra").textContent = data.amostra || data.tipo || "—";
+      document.getElementById("codigoProduto").textContent = data.codigoProduto || data.codigo || "—";
+      document.getElementById("validade").textContent = data.validade || "—";
+      document.getElementById("lote").textContent = data.lote || "—";
+      document.getElementById("assinante").textContent = data.assinante || "Dra. Luiza H. Meller da Silva";
+
+      const hoje = new Date().toLocaleDateString("pt-BR");
       document.getElementById("dataEmissao").textContent = hoje;
 
-      // Tabela de análises
+      // Montar tabela de análises
       const tbody = document.querySelector("#tabela-analises tbody");
       if (!data.analises || data.analises.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Nenhuma análise registrada.</td></tr>';
         return;
       }
+
       tbody.innerHTML = data.analises.map(analise => `
         <tr>
           <td>${analise.nome || "—"}</td>

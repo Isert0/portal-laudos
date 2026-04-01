@@ -11,7 +11,7 @@ const NOME_ABA = process.env.NOME_ABA || "Janeiro";
 const SHEETS_API_KEY = process.env.SHEETS_API_KEY;
 
 if (!SHEETS_API_KEY) {
-  console.error("❌ SHEETS_API_KEY não definida. Defina a variável de ambiente.");
+  console.error("❌ SHEETS_API_KEY não definida. Defina a variável de ambiente no Railway.");
   process.exit(1);
 }
 
@@ -52,7 +52,7 @@ async function getDados() {
 process.on("uncaughtException", (err) => {
   console.error("❌ Exceção não capturada:", err);
 });
-process.on("unhandledRejection", (reason, promise) => {
+process.on("unhandledRejection", (reason) => {
   console.error("❌ Promise rejeitada não tratada:", reason);
 });
 
@@ -88,7 +88,15 @@ app.get("/laudo/:codigo", async (req, res) => {
 
   const base = linhas[0];
 
-  // Mapeamento dos campos da planilha para o objeto do laudo
+  // Função auxiliar para obter o status do laudo (procura por várias nomenclaturas de coluna)
+  const getStatus = () => {
+    const colunasPossiveis = ["Situação do laudo", "Situação", "Status", "Situação do Laudo"];
+    for (let col of colunasPossiveis) {
+      if (base[col]) return base[col];
+    }
+    return null;
+  };
+
   const laudo = {
     codigo: base["Código"] || codigo,
     empresa: base["Empresa"] || null,
@@ -100,7 +108,7 @@ app.get("/laudo/:codigo", async (req, res) => {
     codigoProduto: base["Código do Produto"] || base["Código"] || codigo,
     validade: base["Validade"] || null,
     lote: base["Lote"] || null,
-    status: base["Situação do laudo"] || null,
+    status: getStatus(),  // <-- corrigido para capturar status
     assinante: base["Assinante"] || "Dra. Luiza H. Meller da Silva",
     analises: linhas.map(r => ({
       nome: r["Análise"] || r["Análises a serem realizadas"] || "—",
